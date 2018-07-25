@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            <title>Вычистить хуйню из authorities</title>
+    </head>
+    <body>
+        <script src="https://unpkg.com/golos-js@0.6.3/dist/golos.min.js"></script>
+        <h1>Аккаунт</h1>
+        <form>
+            <p>Логин: <input type="text" name="login" id="login"></p>
+            <p>Пароль: <input type="text" name="pass" id="pass"></p>
+            <p>Новый пароль: <input type="text" name="newpass" id="newpass"></p>
+        </form>
+            <a class="submit"><button>Вычистить всю хуйню из authorities</button></a>
+        <script>
+            golos.config.set('websocket','wss://ws.golos.io');
+            
+            var BUTT = document.querySelector("a.submit");
+            BUTT.addEventListener("click", clean);
+            
+            function clean()
+            {
+            	name = document.getElementById("login").value;
+            	pass = document.getElementById("pass").value;
+            	newpass = document.getElementById("newpass").value;
+            	golos.api.getAccounts([name], function(err, result) {
+	            	owner = golos.auth.getPrivateKeys(name, pass, ['owner']).owner;
+	            	newkeys = golos.auth.generateKeys(name, nepass, ['owner', 'active', 'posting', 'memo']);
+	            	golos.broadcast.accountUpdate(
+	            		owner, 
+	            		name, 
+	            		{"weight_threshold": 1, "account_auths": [], "key_auths": [[newkeys.owner, 1]]}, 
+	            		{"weight_threshold": 1, "account_auths": [], "key_auths": [[newkeys.active, 1]]}, 
+	            		{"weight_threshold": 1, "account_auths": [], "key_auths": [[newkeys.posting, 1]]}, 
+	            		newkeys.memo, 
+	            		result[0].jsonMetadata, 
+	            		function(err, result) {
+							      console.log(err, result);
+					      });
+            	});
+            }
+        </script>
+    </body>
+</html>
