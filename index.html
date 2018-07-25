@@ -26,7 +26,7 @@
             	newpass = document.getElementById("newpass").value;
             	golos.api.getAccounts([name], function(err, result) {
 	            	owner = golos.auth.getPrivateKeys(name, pass, ['owner']).owner;
-	            	newkeys = golos.auth.generateKeys(name, nepass, ['owner', 'active', 'posting', 'memo']);
+	            	newkeys = golos.auth.generateKeys(name, newpass, ['owner', 'active', 'posting', 'memo']);
 	            	golos.broadcast.accountUpdate(
 	            		owner, 
 	            		name, 
